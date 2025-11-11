@@ -1,0 +1,20 @@
+[
+  {
+    "experiment": "baseline_n10_5epochs",
+    "data_path": "data/precomputed/baseline_n10",
+    "epochs": 5,
+    "returncode": 1,
+    "duration": 11.126059532165527,
+    "stdout": "SLURM job: False\n0 - Number of nodes: 1\n0 - Node ID        : 0\n0 - Local rank     : 0\n0 - Global rank    : 0\n0 - World size     : 1\n0 - GPUs per node  : 1\n0 - Master         : True\n0 - Multi-node     : False\n0 - Multi-GPU      : False\n0 - Hostname       : DESKTOP-TK0K987\n",
+    "stderr": "s\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\nn\\modules\\module.py\", line 1762, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\_dynamo\\eval_frame.py\", line 663, in _fn\n    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\_inductor\\scheduler.py\", line 3957, in create_backend\n    raise TritonMissing(inspect.currentframe())\ntorch._inductor.exc.TritonMissing: Cannot find a working triton installation. Either the package is not installed or it is too old. More information on installing Triton can be found at: https://github.com/triton-lang/triton\n\nSet TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS=\"+dynamo\"\n\n"
+  },
+  {
+    "experiment": "idea_n10_5epochs",
+    "data_path": "data/precomputed/idea_n10",
+    "epochs": 5,
+    "returncode": 1,
+    "duration": 11.083266973495483,
+    "stdout": "SLURM job: False\n0 - Number of nodes: 1\n0 - Node ID        : 0\n0 - Local rank     : 0\n0 - Global rank    : 0\n0 - World size     : 1\n0 - GPUs per node  : 1\n0 - Master         : True\n0 - Multi-node     : False\n0 - Multi-GPU      : False\n0 - Hostname       : DESKTOP-TK0K987\n",
+    "stderr": "s\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\nn\\modules\\module.py\", line 1762, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\_dynamo\\eval_frame.py\", line 663, in _fn\n    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\torch\\_inductor\\scheduler.py\", line 3957, in create_backend\n    raise TritonMissing(inspect.currentframe())\ntorch._inductor.exc.TritonMissing: Cannot find a working triton installation. Either the package is not installed or it is too old. More information on installing Triton can be found at: https://github.com/triton-lang/triton\n\nSet TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS=\"+dynamo\"\n\n"
+  }
+]

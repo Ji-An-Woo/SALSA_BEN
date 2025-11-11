@@ -1,0 +1,21 @@
+#!/bin/bash
+# SALSA 5 epochs 실행 명령어 모음
+
+echo "🚀 SALSA 5 Epochs 실행 명령어들"
+echo "================================"
+
+echo ""
+echo "📊 1. Baseline (일반 LWE) 5 epochs 실행:"
+echo "cd external/LWE-benchmarking && py src/salsa/train_and_recover.py --data_path ../../data/precomputed/baseline_n10 --exp_name baseline_5ep --epochs 5 --task lwe --secret_seed 0 --hamming 3 --cpu true"
+
+echo ""
+echo "📊 2. Idea (다항식 LWE) 5 epochs 실행:" 
+echo "cd external/LWE-benchmarking && py src/salsa/train_and_recover.py --data_path ../../data/precomputed/idea_n10 --exp_name idea_5ep --epochs 5 --task lwe --secret_seed 0 --hamming 3 --cpu true"
+
+echo ""
+echo "📊 3. 둘 다 한 번에 실행:"
+echo "cd external/LWE-benchmarking && py src/salsa/train_and_recover.py --data_path ../../data/precomputed/baseline_n10 --exp_name baseline_5ep --epochs 5 --task lwe --secret_seed 0 --hamming 3 --cpu true && py src/salsa/train_and_recover.py --data_path ../../data/precomputed/idea_n10 --exp_name idea_5ep --epochs 5 --task lwe --secret_seed 0 --hamming 3 --cpu true"
+
+echo ""
+echo "📊 4. GPU 사용하려면 --cpu false로 변경:"
+echo "cd external/LWE-benchmarking && py src/salsa/train_and_recover.py --data_path ../../data/precomputed/baseline_n10 --exp_name baseline_5ep --epochs 5 --task lwe --secret_seed 0 --hamming 3 --cpu false"
