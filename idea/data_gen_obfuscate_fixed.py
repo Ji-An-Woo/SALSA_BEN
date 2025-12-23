@@ -80,7 +80,7 @@ def main():
         outdir2 = OUT / f'idea_{name}' #obfuscated 데이터셋 저장 경로 설정
         outdir2.mkdir(parents=True, exist_ok=True) #디렉토리 생성
         save_npy(A2, outdir2 / 'A.npy'); save_npy(b2, outdir2 / 'b.npy'); save_npy(e2, outdir2 / 'e.npy') #행렬 A, 벡터 b, 잡음 e 저장
-        json.dump({'s': s.tolist(), 's_prime': s_prime.tolist(), 'coeffs': coeffs, 'params': ds}, open(outdir2 / 'meta.json','w'), indent=2) #메타데이터 저장
+        json.dump({'s': s.tolist(), 's_prime': s_prime.tolist(), 'coeffs': coeffs, 'params': ds}, open(outdir2 / 'meta.json','w'), indent=2) #메타데이터 저장 
         rows.append({'type':'idea','name':name,'n':n,'m':m,'degrees':str(cfg['idea_params']['degrees']),'coeffs':str(coeffs),'path':str(outdir2)}) #생성된 데이터셋 정보 기록
 
     write_csv(rows, OUT / 'generated_datasets_params.csv')
