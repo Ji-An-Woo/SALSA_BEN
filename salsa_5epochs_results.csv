@@ -1,3 +1,0 @@
-experiment,data_path,epochs,returncode,duration,recovery_success
-baseline_n10_5epochs,data/precomputed/baseline_n10,5,1,11.126059532165527,False
-idea_n10_5epochs,data/precomputed/idea_n10,5,1,11.083266973495483,False

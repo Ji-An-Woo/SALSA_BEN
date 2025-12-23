@@ -8,7 +8,7 @@ RESULTS = ROOT / 'results' / 'salsa_runs'
 ensure_dir(str(RESULTS))
 
 # Update this path if the external repo layout differs
-EXTERNAL_TRAIN_SCRIPT = EXTERNAL / 'src' / 'salsa' / 'train_and_recover.py'
+EXTERNAL_TRAIN_SCRIPT = EXTERNAL / 'src' / 'salsa' / 'train_and_recover.py' 
 # fallback path based on README example
 if not EXTERNAL_TRAIN_SCRIPT.exists():
     EXTERNAL_TRAIN_SCRIPT = EXTERNAL / 'src' / 'salsa' / 'train_and_recover.py'
@@ -18,12 +18,14 @@ if not EXTERNAL_TRAIN_SCRIPT.exists():
     print('Expected at:', EXTERNAL_TRAIN_SCRIPT)
     raise SystemExit(1)
 
-# read datasets list
-cfg = json.load(open('configs/light_params.json'))
-datasets = cfg['datasets']
+# dataset configs (hardcoded)
+datasets = [
+    {'name': 'n10', 'n': 10, 'q': 842779, 'm': 500, 'sigma': 3.0, 'hamming': 3, 'seed': 111},
+    {'name': 'n30', 'n': 30, 'q': 842779, 'm': 2000, 'sigma': 3.0, 'hamming': 3, 'seed': 222}
+]
 
 def build_cmd(data_path, exp_name, seed):
-    flags = cfg.get('salsa_train_flags', {})
+    flags = {}
     cmd = ['python3', str(EXTERNAL_TRAIN_SCRIPT),
            '--data_path', str(data_path),
            '--exp_name', exp_name,
@@ -38,7 +40,7 @@ def build_cmd(data_path, exp_name, seed):
             '--val_batch_size', str(flags.get('val_batch_size',64)),
             '--n_enc_heads', str(flags.get('n_enc_heads',4)),
             '--n_enc_layers', str(flags.get('n_enc_layers',2)),
-            '--enc_emb_dim', str(flags.get('enc_emb_dim',128)),
+            '--enc_emb_dim', str(flags.get('enc_emb_dim',512)),
             '--max_epoch', str(flags.get('epochs',5))]
     return cmd
 

@@ -1,2 +1,0 @@
-﻿experiment_name,experiment_id,data_path,task,secret_recovered,recovery_epochs,recovery_count,final_loss,final_acc1,final_acc5,final_step,final_epoch,learning_rate,N,hamming,epochs_run,batch_size,dtype,compile,device,status,timestamp
-final_test,zgm2ws92ej,C:\Users\user\OneDrive\Desktop\salsa-repro-salsa-connected\data\precomputed\baseline_n10,lwe,True,"[1, 2]",2,3.7437744140625,0.12110591679811478,0.26265576481819153,321,3,4.96e-07,10,3,4,4,float16,False,cuda:0,SUCCESS - Secret Recovered 2 Times!,2025-09-29 02:03:00
