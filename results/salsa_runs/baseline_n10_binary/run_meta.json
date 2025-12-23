@@ -1,0 +1,5 @@
+{
+  "folder": "/home/wza/SALSA_BEN/data/precomputed/baseline_n10_binary",
+  "cmd": "bash -c cd /home/wza/SALSA_BEN/external/LWE-benchmarking && /home/wza/SALSA_BEN/.venv/bin/python3 src/salsa/train_and_recover.py --data_path /home/wza/SALSA_BEN/data/precomputed/baseline_n10_binary --exp_name baseline_n10_binary_exp --secret_seed 0 --dump_path /home/wza/SALSA_BEN/results/salsa_dumps --rlwe 0 --task mlwe-i --angular_emb true --dxdistinguisher true --hamming 3 --train_batch_size 32 --val_batch_size 64 --n_enc_heads 4 --n_enc_layers 2 --enc_emb_dim 512 --epochs 5",
+  "returncode": 1
+}

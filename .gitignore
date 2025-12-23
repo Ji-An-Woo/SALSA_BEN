@@ -41,13 +41,9 @@ venv_salsa/
 Thumbs.db
 
 # Project specific
-results/salsa_dumps/
-results/plots/
-results/salsa_runs/
+# results/ 폴더 내 모든 내용 추적 (CSV, JSON 등 결과물 포함)
+# 단, 대용량 파일은 선택적으로 제외 가능
 
-# 하지만 다음은 추적함 (의존성):
-# /venv_salsa
-# /.venv
 
 # Large data files (keeping only metadata)
 data/precomputed/**/*.npy

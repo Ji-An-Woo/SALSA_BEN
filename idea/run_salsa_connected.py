@@ -22,11 +22,20 @@ if not EXTERNAL_TRAIN_SCRIPT.exists():
     print('Expected at:', EXTERNAL_TRAIN_SCRIPT)
     raise SystemExit(1)
 
-# dataset configs (hardcoded)
-datasets = [
-    {'name': 'n10', 'n': 10, 'q': 842779, 'm': 500, 'sigma': 3.0, 'hamming': 3, 'seed': 111},
-    {'name': 'n30', 'n': 30, 'q': 842779, 'm': 2000, 'sigma': 3.0, 'hamming': 3, 'seed': 222}
-]
+# Load datasets from config file
+config_path = Path(__file__).resolve().parent / 'configs' / 'light_params.json'
+if config_path.exists():
+    with open(config_path) as f:
+        config = json.load(f)
+    datasets = config.get('datasets', [])
+    print(f"✅ Loaded {len(datasets)} datasets from {config_path.name}")
+else:
+    print(f"⚠️  Config file not found: {config_path}")
+    print("   Using default datasets...")
+    datasets = [
+        {'name': 'n10', 'n': 10, 'q': 842779, 'm': 500, 'sigma': 3.0, 'hamming': 3, 'seed': 111},
+        {'name': 'n30', 'n': 30, 'q': 842779, 'm': 2000, 'sigma': 3.0, 'hamming': 3, 'seed': 222}
+    ]
 
 def build_cmd(data_path, exp_name, seed):
     flags = {}
