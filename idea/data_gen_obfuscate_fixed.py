@@ -52,7 +52,11 @@ def save_npy(obj, path):
 
 def write_csv(rows, path):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    header = sorted(rows[0].keys())
+    # Get all unique keys across all rows
+    all_keys = set()
+    for r in rows:
+        all_keys.update(r.keys())
+    header = sorted(all_keys)
     import csv
     with open(path, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=header)

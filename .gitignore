@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual Environments - 제외하지만 requirements 파일은 추적
+venv_salsa/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+results/salsa_dumps/
+results/plots/
+results/salsa_runs/
+
+# 하지만 다음은 추적함 (의존성):
+# /venv_salsa
+# /.venv
+
+# Large data files (keeping only metadata)
+data/precomputed/**/*.npy
+!data/precomputed/**/meta.json
+!data/precomputed/**/params.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log

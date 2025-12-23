@@ -1,7 +1,11 @@
 import os, subprocess, json, re, time
+import sys
 from pathlib import Path
 from tqdm import tqdm
-from src.utils import ensure_dir, save_json
+
+# Add parent directory to path so we can import utils
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from utils import ensure_dir, save_json
 ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL = ROOT / 'external' / 'LWE-benchmarking'   # must clone here
 RESULTS = ROOT / 'results' / 'salsa_runs'
@@ -26,22 +30,30 @@ datasets = [
 
 def build_cmd(data_path, exp_name, seed):
     flags = {}
-    cmd = ['python3', str(EXTERNAL_TRAIN_SCRIPT),
-           '--data_path', str(data_path),
-           '--exp_name', exp_name,
-           '--secret_seed', str(seed),
-           '--rlwe', '0',
-           '--task', 'mlwe-i',
-           '--angular_emb', 'true',
-           '--dxdistinguisher', 'true',
-           '--hamming', '3']
-    # add simple model flags (small for fast runs)
-    cmd += ['--train_batch_size', str(flags.get('train_batch_size',32)),
-            '--val_batch_size', str(flags.get('val_batch_size',64)),
-            '--n_enc_heads', str(flags.get('n_enc_heads',4)),
-            '--n_enc_layers', str(flags.get('n_enc_layers',2)),
-            '--enc_emb_dim', str(flags.get('enc_emb_dim',512)),
-            '--max_epoch', str(flags.get('epochs',5))]
+    # Use the venv python directly
+    python_exe = str(ROOT / '.venv' / 'bin' / 'python3')
+    dump_path = ROOT / 'results' / 'salsa_dumps'
+    dump_path.mkdir(parents=True, exist_ok=True)
+    # Build command to run from EXTERNAL directory so src is importable
+    cmd = [
+        'bash', '-c',
+        f'cd {EXTERNAL} && {python_exe} src/salsa/train_and_recover.py ' +
+        f'--data_path {data_path} ' +
+        f'--exp_name {exp_name} ' +
+        f'--secret_seed {seed} ' +
+        f'--dump_path {dump_path} ' +
+        f'--rlwe 0 ' +
+        f'--task mlwe-i ' +
+        f'--angular_emb true ' +
+        f'--dxdistinguisher true ' +
+        f'--hamming 3 ' +
+        f'--train_batch_size 32 ' +
+        f'--val_batch_size 64 ' +
+        f'--n_enc_heads 4 ' +
+        f'--n_enc_layers 2 ' +
+        f'--enc_emb_dim 512 ' +
+        f'--epochs 5'
+    ]
     return cmd
 
 # find precomputed dataset folders

@@ -1,8 +1,13 @@
 import json, os, csv, re
+import sys
 from pathlib import Path
+
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import numpy as np
 import matplotlib.pyplot as plt
-from src.utils import ensure_dir
+from utils import ensure_dir
 from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
