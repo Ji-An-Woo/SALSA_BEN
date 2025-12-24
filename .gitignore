@@ -41,9 +41,9 @@ venv_salsa/
 Thumbs.db
 
 # Project specific
-# results/ 폴더 내 모든 내용 추적 (CSV, JSON 등 결과물 포함)
-# 단, 대용량 파일은 선택적으로 제외 가능
-
+# 결과물 폴더: 결과 파일을 git 추적에서 제외합니다 (CSV, JSON, dumps 등)
+results/
+# 단, 필요하면 특정 파일만 포함하려면 !를 사용해 예외 처리하세요
 
 # Large data files (keeping only metadata)
 data/precomputed/**/*.npy

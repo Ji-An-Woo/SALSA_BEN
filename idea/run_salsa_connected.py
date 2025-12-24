@@ -78,14 +78,55 @@ for f in tqdm(folders, desc='salsa_folders'):
     out_dir = RESULTS / f.name
     out_dir.mkdir(parents=True, exist_ok=True)
     cmd = build_cmd(f, exp_name, seed=0)
-    print('Running SALSA with command:', ' '.join(cmd))
-    # run and capture stdout/stderr
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    print(f"\n{'='*80}")
+    print(f"🚀 {exp_name} 실행 중...")
+    print(f"{'='*80}")
+    
+    # run and capture stdout/stderr with live epoch progress bar
+    try:
+        epochs_count = int(re.search(r'--epochs\s+(\d+)', ' '.join(cmd)).group(1))
+    except Exception:
+        epochs_count = 1
+    epoch_bar = tqdm(total=epochs_count, desc=f'{f.name} epochs', leave=True)
+    recovery_count = 0
+
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
     stdout_lines = []
+
     for line in p.stdout:
-        print(line, end='')
         stdout_lines.append(line)
+        l = line.rstrip()
+
+        # epoch start detection -> update epoch progress bar
+        if 'starting epoch' in l.lower() or 'starting epoch' in line:
+            # increment epoch counter
+            try:
+                epoch_bar.update(1)
+            except Exception:
+                pass
+            print(f"  📊 {l}")
+        elif 'loss' in l.lower() or 'train/' in l or '"train/' in l:
+            # 학습률, 손실값, 에포크 정보 추출
+            print(f"  📈 {l}")
+        elif 'starting secret recovery' in l.lower() or 'secret recovery' in l.lower():
+            recovery_count += 1
+            tqdm.write(f"  ⏳ [secret recovery #{recovery_count}] {l}")
+        elif 'Best secret guess' in line:
+            print(f"  ✅ {l}")
+        elif 'recovered' in l.lower():
+            print(f"  🎯 {l}")
+
+    try:
+        epoch_bar.close()
+    except Exception:
+        pass
+    
     ret = p.wait()
+    
+    print(f"\n{'='*80}")
+    print(f"✅ {exp_name} 완료 (코드: {ret})")
+    print(f"{'='*80}\n")
+    
     save_json(out_dir / 'run_stdout.json', {'returncode': ret, 'stdout': stdout_lines})
     # try to parse predicted secret(s) from stdout (simple regex)
     joined = ''.join(stdout_lines)
