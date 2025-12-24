@@ -67,23 +67,67 @@ def write_csv(rows, path):
 def main():
     cfg = json.load(open('configs/light_params.json')) #데이터셋 파라미터 불러오기
     rows = [] #생성된 데이터셋 정보를 저장할 리스트
-    print('Generating precomputed datasets (n=10 and n=30)...') #데이터셋 생성 시작
+    print('Generating precomputed datasets...') #데이터셋 생성 시작
     for ds in tqdm(cfg['datasets'], desc='datasets'): #각 데이터셋 파라미터에 대해 반복
         name = ds['name'] #데이터셋 이름
         n = ds['n']; q = ds['q']; m = ds['m']; sigma = ds['sigma']; hamming = ds['hamming']; seed = ds['seed'] #각 파라미터 추출
+        
+        # Generate data for baseline
         s = sample_secret(n, hamming=hamming, seed=seed) #비밀키 생성
-        A,b,e = gen_lwe_samples(n,q,m,sigma,s,seed=seed+1) #LWE 샘플 생성 함수 참고
+        A_orig, b_orig, e_orig = gen_lwe_samples(n, q, m, sigma, s, seed=seed+1) #전체 LWE 샘플 생성
+        
+        # Split data: train (60%), val (20%), test (20%)
+        train_size = int(0.6 * m)
+        val_size = int(0.2 * m)
+        
+        A_train, b_train = A_orig[:train_size], b_orig[:train_size]
+        A_val, b_val = A_orig[train_size:train_size+val_size], b_orig[train_size:train_size+val_size]
+        A_test, b_test = A_orig[train_size+val_size:], b_orig[train_size+val_size:]
+        
         outdir = OUT / f'baseline_{name}' #기본 데이터셋 저장 경로 설정
         outdir.mkdir(parents=True, exist_ok=True) #디렉토리 생성
-        save_npy(A, outdir / 'A.npy'); save_npy(b, outdir / 'b.npy'); save_npy(e, outdir / 'e.npy') #행렬 A, 벡터 b, 잡음 e 저장
+        
+        # Save SALSA-compatible format: *_A.npy in parent dir, *_b_{hamming}_{seed}.npy in data dir
+        save_npy(A_train, OUT / 'train_A.npy')
+        save_npy(A_val, OUT / 'val_A.npy')
+        save_npy(A_test, OUT / 'test_A.npy')
+        save_npy(A_orig, OUT / 'orig_A.npy')
+        
+        save_npy(b_train, outdir / f'train_b_{hamming}_{seed}.npy')
+        save_npy(b_val, outdir / f'val_b_{hamming}_{seed}.npy')
+        save_npy(b_test, outdir / f'test_b_{hamming}_{seed}.npy')
+        save_npy(b_orig, outdir / f'orig_b_{hamming}_{seed}.npy')
+        
+        # Also save the original versions without split
+        save_npy(A_orig, outdir / 'A.npy')
+        save_npy(b_orig, outdir / 'b.npy')
+        save_npy(e_orig, outdir / 'e.npy')
+        
         json.dump({'s': s.tolist(), 'params': ds}, open(outdir / 'meta.json','w'), indent=2) #메타데이터 저장
         rows.append({'type':'baseline','name':name,'n':n,'m':m,'path':str(outdir)}) #생성된 데이터셋 정보 기록
 
+        # Generate data for IDEA (obfuscated)
         s_prime, coeffs = obfuscate_maclaurin(s, q, degrees=cfg['idea_params']['degrees'], coeff_choices=cfg['idea_params']['coeff_choices']) #obfuscation 함수 참고
-        A2,b2,e2 = gen_lwe_samples(n,q,m,sigma,s_prime,seed=seed+2) #obfuscated 비밀키로 LWE 샘플 생성
+        A2_orig, b2_orig, e2_orig = gen_lwe_samples(n, q, m, sigma, s_prime, seed=seed+2) #obfuscated 비밀키로 LWE 샘플 생성
+        
+        A2_train, b2_train = A2_orig[:train_size], b2_orig[:train_size]
+        A2_val, b2_val = A2_orig[train_size:train_size+val_size], b2_orig[train_size:train_size+val_size]
+        A2_test, b2_test = A2_orig[train_size+val_size:], b2_orig[train_size+val_size:]
+        
         outdir2 = OUT / f'idea_{name}' #obfuscated 데이터셋 저장 경로 설정
         outdir2.mkdir(parents=True, exist_ok=True) #디렉토리 생성
-        save_npy(A2, outdir2 / 'A.npy'); save_npy(b2, outdir2 / 'b.npy'); save_npy(e2, outdir2 / 'e.npy') #행렬 A, 벡터 b, 잡음 e 저장
+        
+        # Note: We share the A matrices across baseline and idea
+        # (reusing train_A.npy, etc. from above)
+        save_npy(b2_train, outdir2 / f'train_b_{hamming}_{seed}.npy')
+        save_npy(b2_val, outdir2 / f'val_b_{hamming}_{seed}.npy')
+        save_npy(b2_test, outdir2 / f'test_b_{hamming}_{seed}.npy')
+        save_npy(b2_orig, outdir2 / f'orig_b_{hamming}_{seed}.npy')
+        
+        save_npy(A2_orig, outdir2 / 'A.npy')
+        save_npy(b2_orig, outdir2 / 'b.npy')
+        save_npy(e2_orig, outdir2 / 'e.npy')
+        
         json.dump({'s': s.tolist(), 's_prime': s_prime.tolist(), 'coeffs': coeffs, 'params': ds}, open(outdir2 / 'meta.json','w'), indent=2) #메타데이터 저장 
         rows.append({'type':'idea','name':name,'n':n,'m':m,'degrees':str(cfg['idea_params']['degrees']),'coeffs':str(coeffs),'path':str(outdir2)}) #생성된 데이터셋 정보 기록
 

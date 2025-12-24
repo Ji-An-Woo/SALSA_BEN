@@ -52,7 +52,7 @@ def build_cmd(data_path, exp_name, seed):
         f'--secret_seed {seed} ' +
         f'--dump_path {dump_path} ' +
         f'--rlwe 0 ' +
-        f'--task mlwe-i ' +
+        f'--task lwe ' +
         f'--angular_emb true ' +
         f'--dxdistinguisher true ' +
         f'--hamming 3 ' +
@@ -61,15 +61,17 @@ def build_cmd(data_path, exp_name, seed):
         f'--n_enc_heads 4 ' +
         f'--n_enc_layers 2 ' +
         f'--enc_emb_dim 512 ' +
-        f'--epochs 5'
+        f'--epochs 1 ' +
+        f'--distinguisher_size 90 ' +
+        f'--compile false'
     ]
     return cmd
 
 # find precomputed dataset folders
 pre_dir = ROOT / 'data' / 'precomputed'
-folders = sorted([p for p in pre_dir.iterdir() if p.is_dir()])
+folders = sorted([p for p in pre_dir.iterdir() if p.is_dir() and 'baseline' in p.name])  # baseline만 실행
 
-# run SALSA on each folder containing baseline_*/idea_*
+# run SALSA on each folder containing baseline_*
 for f in tqdm(folders, desc='salsa_folders'):
     # set experiment name
     exp_name = f.name + '_exp'
