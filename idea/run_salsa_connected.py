@@ -59,9 +59,17 @@ def build_cmd(data_path, exp_name, seed):
         f'--max_samples 300000 ' +
         f'--train_batch_size 128 ' +
         f'--val_batch_size 256 ' +
-        f'--n_enc_heads 8 ' +
+        f'--n_enc_heads 16 ' +
         f'--n_enc_layers 1 ' +
-        f'--enc_emb_dim 512 ' +
+        f'--enc_emb_dim 1024 ' +
+        f'--dec_emb_dim 512 ' +
+        f'--n_dec_heads 4 ' +
+        f'--use_ut true ' +
+        f'--enc_loops 8 ' +
+        f'--dec_loops 8 ' +
+        f'--enc_gated true ' +
+        f'--enc_act true ' +
+        f'--enc_loop_idx 0 ' +
         f'--optimizer adam,lr=0.00005 ' +
         f'--epochs 50 ' +
         f'--check_secret_every 500 ' +

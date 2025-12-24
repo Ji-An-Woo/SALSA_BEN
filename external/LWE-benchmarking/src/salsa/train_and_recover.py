@@ -67,6 +67,26 @@ def get_parser():
         "--compile", type=bool_flag, default=True, help="Use torch.compile?"
     )
 
+    # Universal Transformer (UT) / gating / loops (optional)
+    parser.add_argument("--use_ut", type=bool_flag, default=False, help="Use Universal Transformer (UT) architecture")
+    parser.add_argument("--enc_loops", type=int, default=1, help="Number of loops for encoder (UT)")
+    parser.add_argument("--dec_loops", type=int, default=1, help="Number of loops for decoder (UT)")
+    parser.add_argument("--enc_gated", type=bool_flag, default=False, help="Enable gating in encoder UT")
+    parser.add_argument("--dec_gated", type=bool_flag, default=False, help="Enable gating in decoder UT")
+    parser.add_argument("--enc_act", type=bool_flag, default=False, help="Enable adaptive halting (ACT) in encoder")
+    parser.add_argument("--dec_act", type=bool_flag, default=False, help="Enable adaptive halting (ACT) in decoder")
+    parser.add_argument("--enc_loop_idx", type=int, default=-1, help="Loop index / layer index for encoder UT")
+    parser.add_argument("--dec_loop_idx", type=int, default=-1, help="Loop index / layer index for decoder UT")
+    parser.add_argument("--dec_emb_dim", type=int, default=512, help="Decoder embedding dim when using UT")
+    parser.add_argument("--n_dec_heads", type=int, default=4, help="Number of decoder attention heads when using UT")
+    parser.add_argument("--n_dec_layers", type=int, default=4, help="Number of decoder layers when using UT")
+    parser.add_argument("--n_enc_hidden_layers", type=int, default=1, help="Number of hidden layers inside encoder FFN")
+    parser.add_argument("--n_dec_hidden_layers", type=int, default=1, help="Number of hidden layers inside decoder FFN")
+    parser.add_argument("--act_threshold", type=float, default=0.1, help="ACT halting threshold parameter (0..1)")
+    parser.add_argument("--act_ponder_coupling", type=float, default=0.0, help="Ponder penalty coupling for ACT")
+    parser.add_argument("--scalar_gate", type=bool_flag, default=True, help="Use scalar gate (vs vector) in Gate module")
+    parser.add_argument("--norm_attention", type=bool_flag, default=False, help="Use normalized attention")
+
     # Optimizer args
     parser.add_argument(
         "--optimizer",

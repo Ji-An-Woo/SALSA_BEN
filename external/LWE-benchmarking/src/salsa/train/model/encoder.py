@@ -18,6 +18,14 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from einops.layers.torch import Rearrange
+# UT-related helpers (import safely)
+try:
+    from src.salsa.train.model.transformer import TransformerLayer, AdaptiveHalt, get_masks
+except Exception:
+    TransformerLayer = None
+    AdaptiveHalt = None
+    def get_masks(*args, **kwargs):
+        raise RuntimeError("get_masks not available")
 
 
 class BaseEncoder(nn.Module):
@@ -31,7 +39,23 @@ class BaseEncoder(nn.Module):
 
         self.pos_emb = nn.Embedding(self.max_seq_len, params.enc_emb_dim)
         self.drop = nn.Dropout(params.dropout)
-        self.layers = nn.ModuleList([Block(params) for _ in range(params.n_enc_layers)])
+        # Build encoder layers: use regular Block by default; if UT requested use TransformerLayer/AdaptiveHalt
+        if getattr(params, 'use_ut', False):
+            # Import here to avoid circular imports at module import time
+            from src.salsa.train.model.transformer import TransformerLayer, AdaptiveHalt
+            layers = []
+            for layer_id in range(params.n_enc_layers):
+                gated = False
+                if getattr(params, 'enc_gated', False):
+                    gated = True
+                # Use AdaptiveHalt at chosen loop index when enc_act is enabled
+                if getattr(params, 'enc_act', False) and layer_id == getattr(params, 'enc_loop_idx', -1):
+                    layers.append(AdaptiveHalt(params, True, gated))
+                else:
+                    layers.append(TransformerLayer(params, True, gated))
+            self.layers = nn.ModuleList(layers)
+        else:
+            self.layers = nn.ModuleList([Block(params) for _ in range(params.n_enc_layers)])
         self.ln_f = LayerNorm(params.enc_emb_dim, bias=False)
 
         self._init_parameters(params.n_enc_layers)
@@ -56,8 +80,18 @@ class BaseEncoder(nn.Module):
         pos_emb = self.pos_emb(pos)  # (1, t, enc_emb_dim)
 
         x = self.drop(tok_emb + pos_emb)
-        for layer in self.layers:
-            x = layer(x)
+
+        # If UT layers are present, call them with attention masks and loop counts
+        for i, layer in enumerate(self.layers):
+            if TransformerLayer is not None and isinstance(layer, (TransformerLayer, AdaptiveHalt)):
+                # build masks
+                lengths = x.new_full((x.size(0),), t, dtype=torch.long)
+                mask, attn_mask = get_masks(t, lengths, causal=False)
+                loop_count = getattr(self.params, 'enc_loops', 1)
+                x = layer.forward(x, attn_mask, None, None, use_cache=False, cache=None, loop_count=loop_count)
+            else:
+                x = layer(x)
+
         x = self.ln_f(x)
         pooled = torch.max(x, dim=1)[0]
         logits = self.head(pooled)
