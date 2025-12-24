@@ -56,13 +56,16 @@ def build_cmd(data_path, exp_name, seed):
         f'--angular_emb true ' +
         f'--dxdistinguisher true ' +
         f'--hamming 3 ' +
-        f'--train_batch_size 32 ' +
-        f'--val_batch_size 64 ' +
-        f'--n_enc_heads 4 ' +
-        f'--n_enc_layers 2 ' +
+        f'--max_samples 300000 ' +
+        f'--train_batch_size 128 ' +
+        f'--val_batch_size 256 ' +
+        f'--n_enc_heads 8 ' +
+        f'--n_enc_layers 1 ' +
         f'--enc_emb_dim 512 ' +
-        f'--epochs 1 ' +
-        f'--distinguisher_size 90 ' +
+        f'--optimizer adam,lr=0.00005 ' +
+        f'--epochs 50 ' +
+        f'--check_secret_every 500 ' +
+        f'--distinguisher_size 128 ' +
         f'--compile false'
     ]
     return cmd

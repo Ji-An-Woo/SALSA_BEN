@@ -1,3 +1,3 @@
 coeffs,degrees,m,n,name,path,type
-,,500,10,n10,/home/wza/SALSA_BEN/data/precomputed/baseline_n10,baseline
-"{1: -1, 3: 1, 5: 1}","[1, 3, 5]",500,10,n10,/home/wza/SALSA_BEN/data/precomputed/idea_n10,idea
+,,500000,10,n10,/home/wza/SALSA_BEN/data/precomputed/baseline_n10,baseline
+"{1: -1, 3: 1, 5: 1}","[1, 3, 5]",500000,10,n10,/home/wza/SALSA_BEN/data/precomputed/idea_n10,idea
